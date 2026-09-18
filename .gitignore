@@ -38,6 +38,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local SQLite database files (migrations in db/migrations/ ARE committed)
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
