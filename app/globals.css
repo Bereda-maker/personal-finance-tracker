@@ -1,4 +1,3 @@
-```css
 @import "tailwindcss";
 
 /* =========================================================
@@ -6,6 +5,10 @@
    Modern Fintech Design System
    Tailwind CSS v4
    ========================================================= */
+
+/* Enable class-based dark mode (so a toggle can control it).
+   Remove this line if you only want system-based dark mode. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #f8fafc;
@@ -45,12 +48,48 @@
 
 /* =========================================================
    TAILWIND THEME
+   Every token below becomes a Tailwind utility, e.g.
+   bg-primary, text-accent, border-border, rounded-lg
    ========================================================= */
 
 @theme inline {
+  /* Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+
+  --color-success: var(--success);
+  --color-success-dark: var(--success-dark);
+  --color-success-soft: var(--success-soft);
+
+  --color-danger: var(--danger);
+  --color-danger-dark: var(--danger-dark);
+  --color-danger-soft: var(--danger-soft);
+
+  --color-warning: var(--warning);
+
+  --color-surface: var(--surface);
+  --color-surface-soft: var(--surface-soft);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-border: var(--border);
+
+  /* Radii */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  /* Fonts */
   --font-sans:
     Inter,
     ui-sans-serif,
@@ -104,17 +143,7 @@ body {
 
   color: var(--foreground);
 
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: var(--font-sans);
 
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -135,7 +164,7 @@ a:hover {
 }
 
 /* =========================================================
-   BUTTONS
+   FORM ELEMENTS
    ========================================================= */
 
 button {
@@ -146,10 +175,6 @@ button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
 }
-
-/* =========================================================
-   FORM ELEMENTS
-   ========================================================= */
 
 input,
 textarea,
@@ -203,18 +228,13 @@ select:focus {
       rgba(20, 184, 166, 0.3),
       transparent 35%
     ),
-    linear-gradient(
-      135deg,
-      #0f172a 0%,
-      #1e293b 100%
-    );
+    linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 
   color: white;
 
   border-radius: var(--radius-xl);
 
-  box-shadow:
-    0 20px 45px rgba(15, 23, 42, 0.18);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
 }
 
 .balance-card::after {
@@ -237,12 +257,7 @@ select:focus {
    ========================================================= */
 
 .income-card {
-  background: linear-gradient(
-    135deg,
-    #ffffff,
-    #ecfdf5
-  );
-
+  background: linear-gradient(135deg, #ffffff, #ecfdf5);
   border: 1px solid #bbf7d0;
 }
 
@@ -269,12 +284,7 @@ select:focus {
    ========================================================= */
 
 .expense-card {
-  background: linear-gradient(
-    135deg,
-    #ffffff,
-    #fef2f2
-  );
-
+  background: linear-gradient(135deg, #ffffff, #fef2f2);
   border: 1px solid #fecaca;
 }
 
@@ -374,11 +384,7 @@ select:focus {
   border: 0;
   border-radius: 12px;
 
-  background: linear-gradient(
-    135deg,
-    #0f766e,
-    #14b8a6
-  );
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
 
   color: white;
 
@@ -386,8 +392,7 @@ select:focus {
 
   cursor: pointer;
 
-  box-shadow:
-    0 8px 20px rgba(20, 184, 166, 0.2);
+  box-shadow: 0 8px 20px rgba(20, 184, 166, 0.2);
 
   transition:
     transform 0.2s ease,
@@ -396,9 +401,7 @@ select:focus {
 
 .btn-primary:hover {
   transform: translateY(-1px);
-
-  box-shadow:
-    0 12px 26px rgba(20, 184, 166, 0.28);
+  box-shadow: 0 12px 26px rgba(20, 184, 166, 0.28);
 }
 
 .btn-secondary {
@@ -458,9 +461,7 @@ select:focus {
 
 .form-input:focus {
   border-color: var(--accent);
-
-  box-shadow:
-    0 0 0 4px rgba(20, 184, 166, 0.1);
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
 }
 
 /* =========================================================
@@ -575,10 +576,12 @@ select:focus {
 
 /* =========================================================
    DARK MODE
+   Works with either a `.dark` class on <html>/<body>
+   OR the system preference, thanks to the @custom-variant above.
    ========================================================= */
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --background: #020617;
     --foreground: #f8fafc;
 
@@ -591,56 +594,96 @@ select:focus {
 
     --border: #1e293b;
   }
-
-  body {
-    background:
-      radial-gradient(
-        circle at 0% 0%,
-        rgba(20, 184, 166, 0.08),
-        transparent 30%
-      ),
-      #020617;
-  }
-
-  .finance-card {
-    background: rgba(15, 23, 42, 0.9);
-    border-color: #1e293b;
-  }
-
-  .transaction-row {
-    border-color: #1e293b;
-  }
-
-  .transaction-row:hover {
-    background: #111c2e;
-  }
-
-  .form-input {
-    background: #0f172a;
-    border-color: #334155;
-    color: #f8fafc;
-  }
-
-  .btn-secondary {
-    background: #0f172a;
-    border-color: #334155;
-    color: #f8fafc;
-  }
-
-  .btn-secondary:hover {
-    background: #1e293b;
-  }
-
-  .category-icon {
-    background: #1e293b;
-  }
-
-  .section-title {
-    color: #f8fafc;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #334155;
-  }
 }
-```
+
+:root.dark {
+  --background: #020617;
+  --foreground: #f8fafc;
+
+  --surface: #0f172a;
+  --surface-soft: #1e293b;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --border: #1e293b;
+}
+
+body {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(20, 184, 166, 0.06),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(16, 185, 129, 0.05),
+      transparent 30%
+    ),
+    var(--background);
+}
+
+:root.dark body,
+:root:not(.light) body {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(20, 184, 166, 0.08),
+      transparent 30%
+    ),
+    #020617;
+}
+
+/* ---------- Dark-mode component overrides ---------- */
+
+:root.dark .finance-card,
+:root:not(.light) .finance-card {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: #1e293b;
+}
+
+:root.dark .transaction-row,
+:root:not(.light) .transaction-row {
+  border-color: #1e293b;
+}
+
+:root.dark .transaction-row:hover,
+:root:not(.light) .transaction-row:hover {
+  background: #111c2e;
+}
+
+:root.dark .form-input,
+:root:not(.light) .form-input {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:root.dark .btn-secondary,
+:root:not(.light) .btn-secondary {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+:root.dark .btn-secondary:hover,
+:root:not(.light) .btn-secondary:hover {
+  background: #1e293b;
+}
+
+:root.dark .category-icon,
+:root:not(.light) .category-icon {
+  background: #1e293b;
+}
+
+:root.dark .section-title,
+:root:not(.light) .section-title {
+  color: #f8fafc;
+}
+
+:root.dark ::-webkit-scrollbar-thumb,
+:root:not(.light) ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
