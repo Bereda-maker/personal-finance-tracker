@@ -55,7 +55,9 @@ export function TransactionList({
     setIsDeleting(true);
     setDeleteError(null);
     try {
-      const res = await fetch(`/api/transactions/${deletingId}`, { method: "DELETE" });
+      const res = await fetch(`/api/transactions/${deletingId}`, {
+        method: "DELETE",
+      });
       const data = await res.json();
       if (!res.ok) {
         setDeleteError(data.error ?? "Could not delete transaction.");
@@ -73,7 +75,7 @@ export function TransactionList({
 
   if (transactions.length === 0) {
     return (
-      <Card className="text-center text-sm text-gray-500">
+      <Card className="text-center text-sm" style={{ color: "var(--text-muted)" }}>
         No transactions yet. Add your first one above to get started.
       </Card>
     );
@@ -84,11 +86,13 @@ export function TransactionList({
       <p role="status" aria-live="polite" className="sr-only">
         {statusMessage}
       </p>
-      <ul className="divide-y divide-gray-100" aria-label="Recent transactions">
+
+      <ul className="transaction-list" aria-label="Recent transactions">
         {transactions.map((t) => (
-          <li key={t.id} className="p-4">
+          <li key={t.id} className="transaction-row">
             {editingId === t.id ? (
-              <div className="rounded-md bg-gray-50 p-3">
+              /* ---------- Edit mode ---------- */
+              <div className="col-span-full rounded-md p-3" style={{ background: "var(--surface-2)" }}>
                 <TransactionForm
                   categories={categories}
                   initialValues={transactionToFormValues(t)}
@@ -105,34 +109,43 @@ export function TransactionList({
                 </Button>
               </div>
             ) : (
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
+              /* ---------- View mode ---------- */
+              <>
+                {/* Left: category icon */}
+                <span
+                  aria-hidden
+                  className="category-icon"
+                  style={{
+                    backgroundColor: `${t.categoryColor}22`,
+                    color: t.categoryColor,
+                  }}
+                >
+                  {t.categoryName.charAt(0).toUpperCase()}
+                </span>
+
+                {/* Middle: title + meta + amount */}
+                <div className="transaction-main">
+                  <span className="transaction-title">
+                    {t.note || t.categoryName}
+                  </span>
+                  <span className="transaction-meta">
+                    {t.categoryName} · {formatDate(t.occurredAt)}
+                  </span>
                   <span
-                    aria-hidden
-                    className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: t.categoryColor }}
-                  />
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-gray-900">
-                      {t.note || t.categoryName}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {t.categoryName} · {formatDate(t.occurredAt)}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  <span
-                    className={`text-sm font-semibold tabular-nums ${
-                      t.type === "income" ? "text-green-600" : "text-gray-900"
+                    className={`amount ${
+                      t.type === "income" ? "amount-income" : "amount-expense"
                     }`}
                   >
-                    {t.type === "income" ? "+" : "-"}
+                    {t.type === "income" ? "+" : "−"}
                     {formatCents(t.amountCents)}
                   </span>
+                </div>
+
+                {/* Right: actions */}
+                <div className="transaction-actions">
                   <Button
                     variant="ghost"
-                    className="text-xs"
+                    className="action-edit"
                     onClick={() => setEditingId(t.id)}
                     aria-label={`Edit transaction: ${t.note || t.categoryName}`}
                   >
@@ -140,14 +153,14 @@ export function TransactionList({
                   </Button>
                   <Button
                     variant="ghost"
-                    className="text-xs text-red-600 hover:bg-red-50"
+                    className="action-delete"
                     onClick={() => setDeletingId(t.id)}
                     aria-label={`Delete transaction: ${t.note || t.categoryName}`}
                   >
                     Delete
                   </Button>
                 </div>
-              </div>
+              </>
             )}
           </li>
         ))}
