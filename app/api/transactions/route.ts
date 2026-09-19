@@ -44,8 +44,13 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+
+    // Coerce + validate. If this throws a ZodError, errorResponse() will
+    // return a 400 with a structured `issues` array.
     const input = transactionInputSchema.parse(body);
 
+    // Guard: category must exist. Fails cleanly as a 400 instead of
+    // surfacing a raw foreign-key violation from SQLite.
     const [category] = await db
       .select({ id: categories.id })
       .from(categories)
@@ -63,7 +68,7 @@ export async function POST(req: NextRequest) {
         type: input.type,
         categoryId: input.categoryId,
         occurredAt: input.occurredAt,
-        note: input.note || null,
+        note: input.note && input.note.length > 0 ? input.note : null,
       })
       .returning();
 
