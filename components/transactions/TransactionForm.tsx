@@ -78,6 +78,7 @@ export function TransactionForm({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   function update<K extends keyof TransactionFormValues>(key: K, value: TransactionFormValues[K]) {
     setValues((v) => ({ ...v, [key]: value }));
@@ -87,6 +88,7 @@ export function TransactionForm({
     e.preventDefault();
     setSubmitting(true);
     setFormError(null);
+    setStatusMessage(null);
     setErrors({});
 
     const amountNumber = Number(values.amount);
@@ -126,6 +128,7 @@ export function TransactionForm({
       if (!isEdit) {
         setValues(emptyTransactionValues());
       }
+      setStatusMessage(isEdit ? "Transaction updated." : "Transaction added.");
       router.refresh();
       onSuccess?.();
     } catch {
@@ -142,6 +145,9 @@ export function TransactionForm({
           {formError}
         </p>
       )}
+      <p role="status" aria-live="polite" className="sr-only">
+        {statusMessage}
+      </p>
 
       <div className="grid grid-cols-2 gap-3">
         <SelectField
