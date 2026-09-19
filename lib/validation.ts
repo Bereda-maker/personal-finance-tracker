@@ -27,9 +27,13 @@ export const transactionTypeSchema = z.enum(["income", "expense"]);
  * Input shape as it arrives from a form: amount in whole dollars (a human
  * types "12.50"), converted to integer cents server-side before it ever
  * touches the database. See lib/money.ts.
+ *
+ * NOTE: `amount` and `categoryId` use z.coerce — form inputs always send
+ * strings ("12.50", "3"), and without coercion Zod rejects them before the
+ * request ever reaches the database.
  */
 export const transactionInputSchema = z.object({
-  amount: z
+  amount: z.coerce
     .number({ error: "Amount is required" })
     .positive("Amount must be greater than zero")
     .max(1_000_000, "Amount is unreasonably large")
@@ -38,7 +42,10 @@ export const transactionInputSchema = z.object({
       "Amount cannot have more than 2 decimal places",
     ),
   type: transactionTypeSchema,
-  categoryId: z.number({ error: "Category is required" }).int().positive(),
+  categoryId: z.coerce
+    .number({ error: "Category is required" })
+    .int()
+    .positive(),
   occurredAt: z.coerce.date({ error: "A valid date is required" }),
   note: z
     .string()
