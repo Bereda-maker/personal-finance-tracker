@@ -43,14 +43,25 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    // ---- Step 1: read body ----
     const body = await req.json();
+    console.log("[POST /api/transactions] raw body:", JSON.stringify(body));
 
-    // Coerce + validate. If this throws a ZodError, errorResponse() will
-    // return a 400 with a structured `issues` array.
+    // ---- Step 2: validate ----
     const input = transactionInputSchema.parse(body);
+    console.log("[POST /api/transactions] parsed input:", {
+      amount: input.amount,
+      amountType: typeof input.amount,
+      type: input.type,
+      categoryId: input.categoryId,
+      categoryIdType: typeof input.categoryId,
+      occurredAt: input.occurredAt,
+      occurredAtIsDate: input.occurredAt instanceof Date,
+      occurredAtValid: !isNaN(input.occurredAt.getTime()),
+      note: input.note,
+    });
 
-    // Guard: category must exist. Fails cleanly as a 400 instead of
-    // surfacing a raw foreign-key violation from SQLite.
+    // ---- Step 3: verify category exists ----
     const [category] = await db
       .select({ id: categories.id })
       .from(categories)
@@ -61,17 +72,33 @@ export async function POST(req: NextRequest) {
       throw new ApiError("Category does not exist", 400);
     }
 
+    // ---- Step 4: build insert values ----
+    const amountCents = currencyToCents(input.amount);
+    console.log(
+      "[POST /api/transactions] amountCents:",
+      amountCents,
+      typeof amountCents,
+    );
+
+    const insertValues = {
+      amountCents,
+      type: input.type,
+      categoryId: input.categoryId,
+      occurredAt: input.occurredAt,
+      note: input.note && input.note.length > 0 ? input.note : null,
+    };
+    console.log(
+      "[POST /api/transactions] insert values:",
+      JSON.stringify(insertValues),
+    );
+
+    // ---- Step 5: insert ----
     const [created] = await db
       .insert(transactions)
-      .values({
-        amountCents: currencyToCents(input.amount),
-        type: input.type,
-        categoryId: input.categoryId,
-        occurredAt: input.occurredAt,
-        note: input.note && input.note.length > 0 ? input.note : null,
-      })
+      .values(insertValues)
       .returning();
 
+    console.log("[POST /api/transactions] created:", created);
     return NextResponse.json(created, { status: 201 });
   } catch (error) {
     return errorResponse(error);
