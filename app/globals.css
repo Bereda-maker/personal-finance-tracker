@@ -454,12 +454,14 @@ select:focus {
 }
 
 .transaction-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
   align-items: center;
-  gap: 14px;
-  padding: 16px 18px;
+  gap: 12px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border);
   transition: background-color 0.2s var(--ease);
+  min-width: 0; /* allow inner content to shrink */
 }
 
 .transaction-row:last-child {
@@ -469,6 +471,8 @@ select:focus {
 .transaction-row:hover {
   background: var(--surface-2);
 }
+
+/* Category icon — unchanged */
 
 .category-icon {
   display: flex;
@@ -493,92 +497,88 @@ select:focus {
   color: var(--accent);
 }
 
+/* Middle column — title + meta stack, allowed to truncate */
+
+.transaction-main {
+  min-width: 0; /* critical for text-overflow to work */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .transaction-title {
   font-weight: 600;
   color: var(--text-primary);
   font-size: 15px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .transaction-meta {
   font-size: 13px;
   color: var(--text-muted);
-  margin-top: 2px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* Right column — amount stays put, never shrinks */
+
 .amount {
-  margin-left: auto;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   font-size: 15px;
+  white-space: nowrap;
+  text-align: right;
 }
 
 .amount-income {
   color: var(--success-ink);
-  font-weight: 700;
 }
 
 .amount-expense {
   color: var(--danger-ink);
-  font-weight: 700;
 }
 
-/* =========================================================
-   BUTTONS
-   ========================================================= */
+/* ---------- Mobile ---------- */
 
-.btn-primary,
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 11px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition:
-    transform 0.2s var(--ease-out),
-    box-shadow 0.2s var(--ease-out),
-    background-color 0.2s var(--ease),
-    border-color 0.2s var(--ease);
-  white-space: nowrap;
+@media (max-width: 480px) {
+  .transaction-row {
+    grid-template-columns: 40px 1fr auto;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .category-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    font-size: 18px;
+  }
+
+  .transaction-title {
+    font-size: 14px;
+  }
+
+  .transaction-meta {
+    font-size: 12px;
+  }
+
+  .amount {
+    font-size: 14px;
+  }
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-  color: #ffffff;
-  box-shadow:
-    0 6px 14px -4px var(--accent-glow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-}
+/* Very narrow (older phones, 320px) — drop the meta line */
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 12px 24px -6px var(--accent-glow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+@media (max-width: 360px) {
+  .transaction-meta {
+    display: none;
+  }
 }
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-.btn-secondary {
-  background: var(--surface);
-  color: var(--text-primary);
-  border-color: var(--border);
-  box-shadow: var(--shadow-xs);
-}
-
-.btn-secondary:hover {
-  background: var(--surface-2);
-  border-color: var(--border-strong);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
 /* =========================================================
    FORM INPUTS
    ========================================================= */
