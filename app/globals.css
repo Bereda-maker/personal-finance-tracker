@@ -1,16 +1,17 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 /* =========================================================
    PERSONAL FINANCE TRACKER
    Modern Fintech Design System
-   Tailwind CSS v4
+   Tailwind CSS v4 — Light mode only
    ========================================================= */
 
-/* ---------- Light mode (default) ---------- */
-
+/* Tell the browser we are light-only so form controls,
+   scrollbars, and native UI render in light style even on
+   devices that default to dark mode. */
 :root {
+  color-scheme: light;
+
   /* Surfaces */
   --background: #f6f7fb;
   --foreground: #0b1220;
@@ -67,94 +68,6 @@
   /* Motion */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ---------- Dark mode (system preference) ---------- */
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    --background: #0a0e1a;
-    --foreground: #e8ecf3;
-
-    --surface: #111827;
-    --surface-2: #172033;
-    --surface-3: #1e293b;
-
-    --accent: #14b8a6;
-    --accent-2: #2dd4bf;
-    --accent-soft: rgba(20, 184, 166, 0.16);
-    --accent-glow: rgba(20, 184, 166, 0.45);
-
-    --ink-900: #f1f5f9;
-    --ink-800: #e2e8f0;
-    --ink-700: #cbd5e1;
-
-    --success: #34d399;
-    --success-soft: rgba(52, 211, 153, 0.14);
-    --success-ink: #6ee7b7;
-
-    --danger: #f87171;
-    --danger-soft: rgba(248, 113, 113, 0.14);
-    --danger-ink: #fca5a5;
-
-    --warning: #fbbf24;
-
-    --text-primary: #f1f5f9;
-    --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;
-
-    --border: #1e293b;
-    --border-strong: #334155;
-
-    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.4);
-    --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.6), 0 8px 20px rgba(0, 0, 0, 0.45);
-  }
-}
-
-/* ---------- Dark mode (explicit .dark class) ---------- */
-
-:root.dark {
-  --background: #0a0e1a;
-  --foreground: #e8ecf3;
-
-  --surface: #111827;
-  --surface-2: #172033;
-  --surface-3: #1e293b;
-
-  --accent: #14b8a6;
-  --accent-2: #2dd4bf;
-  --accent-soft: rgba(20, 184, 166, 0.16);
-  --accent-glow: rgba(20, 184, 166, 0.45);
-
-  --ink-900: #f1f5f9;
-  --ink-800: #e2e8f0;
-  --ink-700: #cbd5e1;
-
-  --success: #34d399;
-  --success-soft: rgba(52, 211, 153, 0.14);
-  --success-ink: #6ee7b7;
-
-  --danger: #f87171;
-  --danger-soft: rgba(248, 113, 113, 0.14);
-  --danger-ink: #fca5a5;
-
-  --warning: #fbbf24;
-
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-
-  --border: #1e293b;
-  --border-strong: #334155;
-
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.6), 0 8px 20px rgba(0, 0, 0, 0.45);
 }
 
 /* =========================================================
@@ -233,6 +146,7 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--background);
 }
 
 body {
@@ -251,28 +165,6 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
-}
-
-/* Dark body background — richer gradients so it feels alive */
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) body {
-    background:
-      radial-gradient(1200px 600px at 0% -10%, rgba(20, 184, 166, 0.14), transparent 55%),
-      radial-gradient(1000px 500px at 100% 0%, rgba(99, 102, 241, 0.12), transparent 50%),
-      radial-gradient(800px 400px at 50% 110%, rgba(45, 212, 191, 0.08), transparent 55%),
-      #0a0e1a;
-  }
-}
-
-:root.dark body {
-  background:
-    radial-gradient(1200px 600px at 0% -10%, rgba(20, 184, 166, 0.14), transparent 55%),
-    radial-gradient(1000px 500px at 100% 0%, rgba(99, 102, 241, 0.12), transparent 50%),
-    radial-gradient(800px 400px at 50% 110%, rgba(45, 212, 191, 0.08), transparent 55%),
-    #0a0e1a;
 }
 
 /* =========================================================
@@ -367,8 +259,7 @@ select:focus {
   transition:
     transform 0.35s var(--ease-out),
     box-shadow 0.35s var(--ease-out),
-    border-color 0.35s var(--ease-out),
-    background-color 0.3s var(--ease);
+    border-color 0.35s var(--ease-out);
 }
 
 .finance-card:hover {
@@ -467,8 +358,7 @@ select:focus {
   overflow: hidden;
   transition:
     transform 0.3s var(--ease-out),
-    box-shadow 0.3s var(--ease-out),
-    background-color 0.3s var(--ease);
+    box-shadow 0.3s var(--ease-out);
 }
 
 .stat-card:hover {
@@ -506,7 +396,7 @@ select:focus {
   height: 44px;
   border-radius: 14px;
   margin-bottom: 14px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), var(--shadow-xs);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), var(--shadow-xs);
   transition: transform 0.3s var(--ease-out);
 }
 
@@ -515,12 +405,12 @@ select:focus {
 }
 
 .stat-icon--income {
-  background: linear-gradient(135deg, var(--success-soft), rgba(52, 211, 153, 0.2));
+  background: linear-gradient(135deg, var(--success-soft), #ecfdf5);
   color: var(--success-ink);
 }
 
 .stat-icon--expense {
-  background: linear-gradient(135deg, var(--danger-soft), rgba(248, 113, 113, 0.2));
+  background: linear-gradient(135deg, var(--danger-soft), #fff1f2);
   color: var(--danger-ink);
 }
 
@@ -652,8 +542,7 @@ select:focus {
     transform 0.2s var(--ease-out),
     box-shadow 0.2s var(--ease-out),
     background-color 0.2s var(--ease),
-    border-color 0.2s var(--ease),
-    color 0.2s var(--ease);
+    border-color 0.2s var(--ease);
   white-space: nowrap;
 }
 
@@ -704,9 +593,7 @@ select:focus {
   font-size: 14px;
   transition:
     border-color 0.2s var(--ease),
-    box-shadow 0.2s var(--ease),
-    background-color 0.2s var(--ease),
-    color 0.2s var(--ease);
+    box-shadow 0.2s var(--ease);
 }
 
 .form-input:hover {
@@ -715,8 +602,7 @@ select:focus {
 
 .form-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.15);
-  background: var(--surface);
+  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.12);
 }
 
 /* =========================================================
