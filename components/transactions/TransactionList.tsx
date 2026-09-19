@@ -48,6 +48,7 @@ export function TransactionList({
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   async function confirmDelete() {
     if (deletingId == null) return;
@@ -61,6 +62,7 @@ export function TransactionList({
         return;
       }
       setDeletingId(null);
+      setStatusMessage("Transaction deleted.");
       router.refresh();
     } catch {
       setDeleteError("Network error — please try again.");
@@ -79,6 +81,9 @@ export function TransactionList({
 
   return (
     <Card className="p-0">
+      <p role="status" aria-live="polite" className="sr-only">
+        {statusMessage}
+      </p>
       <ul className="divide-y divide-gray-100" aria-label="Recent transactions">
         {transactions.map((t) => (
           <li key={t.id} className="p-4">

@@ -71,25 +71,29 @@ export function CategoryQuickCreate({
         error={error ?? undefined}
         autoFocus
       />
-      <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-600">Color</span>
-        <div className="flex gap-1" role="radiogroup" aria-label="Category color">
+      <fieldset className="flex items-center gap-2">
+        <legend className="text-xs text-gray-600">Color</legend>
+        <div className="flex gap-1">
           {SUGGESTED_COLORS.map((c) => (
-            <button
-              key={c}
-              type="button"
-              role="radio"
-              aria-checked={color === c}
-              aria-label={c}
-              onClick={() => setColor(c)}
-              className={`h-6 w-6 rounded-full border-2 ${
-                color === c ? "border-gray-900" : "border-transparent"
-              }`}
-              style={{ backgroundColor: c }}
-            />
+            <label key={c} className="relative">
+              <input
+                type="radio"
+                name="new-category-color"
+                value={c}
+                checked={color === c}
+                onChange={() => setColor(c)}
+                className="peer sr-only"
+              />
+              <span
+                aria-hidden
+                className="block h-6 w-6 cursor-pointer rounded-full border-2 border-transparent peer-checked:border-gray-900 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-1 peer-focus-visible:ring-gray-900"
+                style={{ backgroundColor: c }}
+              />
+              <span className="sr-only">{c}</span>
+            </label>
           ))}
         </div>
-      </div>
+      </fieldset>
       <div className="flex gap-2">
         <Button
           type="button"

@@ -35,7 +35,7 @@ export default async function Home() {
     ]);
 
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 sm:p-8">
+    <main id="main-content" className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 sm:p-8">
       <header>
         <h1 className="text-xl font-semibold text-gray-900">Personal Finance Tracker</h1>
       </header>
