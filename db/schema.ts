@@ -3,6 +3,7 @@ import {
   sqliteTable,
   integer,
   text,
+  index,
 } from "drizzle-orm/sqlite-core";
 
 /**
@@ -23,22 +24,32 @@ export const categories = sqliteTable("categories", {
  * Money is stored as integer cents (amountCents), never as a float.
  * See lib/money.ts for the conversion utilities used at the UI boundary.
  */
-export const transactions = sqliteTable("transactions", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  amountCents: integer("amount_cents").notNull(),
-  type: text("type", { enum: ["income", "expense"] }).notNull(),
-  categoryId: integer("category_id")
-    .notNull()
-    .references(() => categories.id, { onDelete: "restrict" }),
-  // Stored as a real SQLite date (unix epoch under the hood), so date-range
-  // queries (e.g. "this month", "last 6 months") can be done in SQL rather
-  // than pulling every row into JavaScript.
-  occurredAt: integer("occurred_at", { mode: "timestamp" }).notNull(),
-  note: text("note"),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .default(sql`(unixepoch())`),
-});
+export const transactions = sqliteTable(
+  "transactions",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    amountCents: integer("amount_cents").notNull(),
+    type: text("type", { enum: ["income", "expense"] }).notNull(),
+    categoryId: integer("category_id")
+      .notNull()
+      .references(() => categories.id, { onDelete: "restrict" }),
+    // Stored as a real SQLite date (unix epoch under the hood), so date-range
+    // queries (e.g. "this month", "last 6 months") can be done in SQL rather
+    // than pulling every row into JavaScript.
+    occurredAt: integer("occurred_at", { mode: "timestamp" }).notNull(),
+    note: text("note"),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (table) => [
+    // The dashboard's six-month trend and recent-transactions queries both
+    // sort/filter on occurredAt; the category breakdown joins on categoryId.
+    // Without these, both scale linearly with total transaction count.
+    index("transactions_occurred_at_idx").on(table.occurredAt),
+    index("transactions_category_id_idx").on(table.categoryId),
+  ],
+);
 
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;

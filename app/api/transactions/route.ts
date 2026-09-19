@@ -6,8 +6,18 @@ import { transactionInputSchema } from "@/lib/validation";
 import { currencyToCents } from "@/lib/money";
 import { ApiError, errorResponse } from "@/lib/api-errors";
 
-export async function GET() {
+const MAX_LIMIT = 200;
+const DEFAULT_LIMIT = 50;
+
+export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const limit = Math.min(
+      Number(searchParams.get("limit")) || DEFAULT_LIMIT,
+      MAX_LIMIT,
+    );
+    const offset = Math.max(Number(searchParams.get("offset")) || 0, 0);
+
     const rows = await db
       .select({
         id: transactions.id,
@@ -21,7 +31,9 @@ export async function GET() {
       })
       .from(transactions)
       .innerJoin(categories, eq(transactions.categoryId, categories.id))
-      .orderBy(desc(transactions.occurredAt), desc(transactions.id));
+      .orderBy(desc(transactions.occurredAt), desc(transactions.id))
+      .limit(limit)
+      .offset(offset);
 
     return NextResponse.json(rows);
   } catch (error) {
